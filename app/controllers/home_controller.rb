@@ -36,8 +36,7 @@ class HomeController < ApplicationController
   end
 
   def download
-    binding.pry
-
+    send_file File.join(Rails.root,params[:target])
   end
 
 end

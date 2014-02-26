@@ -11,6 +11,8 @@ Elrails::Application.routes.draw do
   get '/vendor/mounts/.thumbs/:id' =>  'home#thumbs'
   get '/vendor/mounts/:id' => 'home#previews'
 
+  get '/download' => 'home#download'
+
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

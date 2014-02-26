@@ -35,4 +35,9 @@ class HomeController < ApplicationController
    send_file File.join(Rails.root,'vendor','mounts',params[:id] + '.' + params[:format]) , disposition: 'inline'
   end
 
+  def download
+    binding.pry
+
+  end
+
 end

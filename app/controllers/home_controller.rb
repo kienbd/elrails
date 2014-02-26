@@ -5,8 +5,8 @@ class HomeController < ApplicationController
 
   def elfinder
     h, r = ElFinder::Connector.new(
-      :root => File.join(Rails.public_path, 'system', 'elfinder'),
-      :url => '/system/elfinder',
+      :root => File.join(Rails.root, 'vendor', 'mounts'),
+      :url => '/vendor/mounts',
       :perms => {
         /pjkh\.png$/ => {:write => false, :rm => false},
         /\.txt$/ => {:write => true,:rm => true}
@@ -24,6 +24,15 @@ class HomeController < ApplicationController
 
     headers.merge!(h)
     render (r.empty? ? {:nothing => true} : {:text => r.to_json}), :layout => false
+  end
+
+  def thumbs
+   thumb  = params[:id] + '.' + params[:format]
+   send_file File.join(Rails.root,'vendor','mounts','.thumbs',thumb)
+  end
+
+  def previews
+   send_file File.join(Rails.root,'vendor','mounts',params[:id] + '.' + params[:format]) , disposition: 'inline'
   end
 
 end

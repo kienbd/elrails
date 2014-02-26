@@ -8,6 +8,9 @@ Elrails::Application.routes.draw do
   post 'elfinder' => 'home#elfinder'
   put 'elfinder' => 'home#elfinder'
 
+  get '/vendor/mounts/.thumbs/:id' =>  'home#thumbs'
+  get '/vendor/mounts/:id' => 'home#previews'
+
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

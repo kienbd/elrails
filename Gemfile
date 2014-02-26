@@ -11,6 +11,8 @@ gem 'jbuilder', '~> 1.2'
 gem 'sqlite3-ruby', :require => 'sqlite3'
 gem 'el_finder'
 gem 'thin'
+gem 'therubyracer'
+gem 'pry'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.

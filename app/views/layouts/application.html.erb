@@ -7,6 +7,10 @@
   <%= csrf_meta_tag %>
 </head>
 <body>
+  <header>
+    <a href="/users/sign_out" data-method="delete">Signout</a>
+    <a href="/createContainer" data-remote='true'>Create Container</a>
+  </header>
   <%= yield %>
 </body>
 </html>

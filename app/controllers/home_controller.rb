@@ -12,13 +12,14 @@ class HomeController < ApplicationController
 
   def elfinder
     h, r = ElFinder::Connector.new(
-                         :root => File.join(Rails.root, 'vendor', 'mounts',current_user.phash),
-      :url => '/vendor/mounts',
+      :root => File.join(Rails.root, 'vendor', 'mounts',current_user.phash),
+      :url => '/vendor/mounts/' + current_user.phash + "/",
       :home => current_user.email,
       :perms => {
         /pjkh\.png$/ => {:write => false, :rm => false},
         /\.txt$/ => {:write => true,:rm => true},
-        '.' => {:read =>true,:write =>false,:rm => false}
+        '.' => {:read =>true,:write =>false,:rm => false},
+
       },
       :extractors => {
         'application/zip' => ['unzip', '-qq', '-o'],
@@ -28,6 +29,7 @@ class HomeController < ApplicationController
         'application/zip' => ['.zip', 'zip', '-qr9'],
         'application/x-gzip' => ['.tgz', 'tar', '-czf'],
       },
+      :disabled_commands => [:rm],
       :thumbs => true
     ).run(params)
 
@@ -36,12 +38,12 @@ class HomeController < ApplicationController
   end
 
   def thumbs
-   thumb  = params[:id] + '.' + params[:format]
-   send_file File.join(Rails.root,'vendor','mounts','.thumbs',thumb)
+    thumb  = params[:id] + '.' + params[:format]
+    send_file File.join(Rails.root,'vendor','mounts',current_user.phash,'.thumbs',thumb)
   end
 
   def previews
-   send_file File.join(Rails.root,'vendor','mounts',params[:id] + '.' + params[:format]) , disposition: 'inline'
+    send_file File.join(Rails.root,'vendor','mounts',params[:user_hash],params[:preview]) , disposition: 'inline'
   end
 
   def download
@@ -50,11 +52,10 @@ class HomeController < ApplicationController
 
 
   def createContainer
-    params[:mount] = "test"
-    params[:file_name] = "test"
+    params[:mount] = "test" + rand(100).to_s
     path = File.join(Rails.root,'vendor','mounts',current_user.phash,params[:mount])
     FileUtils.mkdir(path) if !File.directory? path
-    `source "#{Rails.root.join('lib','bash','test.sh').to_s}" "#{params[:file_name]}"`
+    `source "#{Rails.root.join('lib','bash','test.sh').to_s}" "#{path}"`
     binding.pry
     respond_to do |format|
       format.html

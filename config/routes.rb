@@ -13,8 +13,10 @@ Elrails::Application.routes.draw do
   post 'elfinder' => 'home#elfinder'
   put 'elfinder' => 'home#elfinder'
 
-  get '/vendor/mounts/.thumbs/:id' =>  'home#thumbs'
-  get '/vendor/mounts/:id' => 'home#previews'
+  get '/vendor/mounts/:user_hash/.thumbs/:id' =>  'home#thumbs'
+  get '/vendor/mounts/:user_hash/:preview' => 'home#previews',constraints: {
+    preview: /.*/
+  }
   get '/download' => 'home#download'
   get '/createContainer' => 'home#createContainer'
 

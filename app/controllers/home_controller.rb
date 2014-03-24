@@ -19,7 +19,7 @@ class HomeController < ApplicationController
         /pjkh\.png$/ => {:write => false, :rm => false},
         /\.txt$/ => {:write => true,:rm => true},
         '.' => {:read =>true,:write =>false,:rm => false},
-
+	'/' => {:rm => false}
       },
       :extractors => {
         'application/zip' => ['unzip', '-qq', '-o'],
@@ -52,11 +52,14 @@ class HomeController < ApplicationController
 
 
   def createContainer
-    params[:mount] = "test" + rand(100).to_s
     path = File.join(Rails.root,'vendor','mounts',current_user.phash,params[:mount])
-    FileUtils.mkdir(path) if !File.directory? path
-    `source "#{Rails.root.join('lib','bash','test.sh').to_s}" "#{path}"`
-    binding.pry
+    if !File.directory? path
+	    # FileUtils.mkdir(path) if !File.directory? path
+	    container_name = current_user.phash + params[:mount]
+	    `source "#{Rails.root.join('lib','bash','test.sh').to_s}" "#{current_user.email}" "#{container_name}" "#{path}"`
+    else
+
+    end
     respond_to do |format|
       format.html
       format.js

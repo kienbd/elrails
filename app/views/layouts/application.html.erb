@@ -9,7 +9,10 @@
 <body>
   <header>
     <a href="/users/sign_out" data-method="delete">Signout</a>
-    <a href="/createContainer" data-remote='true'>Create Container</a>
+    <form action="/createContainer" data-remote='true'>
+	    <input type='text' name="mount">
+            <input type='submit' value='submit'>
+    </form>
   </header>
   <%= yield %>
 </body>

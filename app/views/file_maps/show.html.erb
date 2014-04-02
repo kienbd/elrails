@@ -1,0 +1,17 @@
+<%= @file.remote_url %>
+
+
+
+<button onclick="download_file(this)"> Download </button>
+
+
+
+<script type="text/javascript">
+  var download_file = function() {
+    $('<iframe style="display:none" src="'+"/download?"+"target="+encodeURIComponent('<%= @file.remote_url %>')+'"/>').appendTo("body");
+    $("button").attr('disabled','disabled').html("Downloading ...");
+  }
+
+
+
+</script>

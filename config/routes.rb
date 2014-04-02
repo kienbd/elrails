@@ -20,6 +20,9 @@ Elrails::Application.routes.draw do
   get '/download' => 'home#download'
   get '/createContainer' => 'home#createContainer'
 
+  get '/shares/:id' => 'file_maps#show'
+  resources :file_maps
+
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

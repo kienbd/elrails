@@ -13,9 +13,9 @@ class HomeController < ApplicationController
   def elfinder
     path = File.join(Rails.root,'vendor','mounts',current_user.phash)
     while !File.directory? path do
-      binding.pry
-      sleep(1)
+      sleep(0.5)
     end
+    if File.directory? path 
     h, r = ElFinder::Connector.new(
       :root => File.join(Rails.root, 'vendor', 'mounts',current_user.phash),
       :url => '/vendor/mounts/' + current_user.phash + "/",
@@ -39,6 +39,9 @@ class HomeController < ApplicationController
 
     headers.merge!(h)
     render (r.empty? ? {:nothing => true} : {:text => r.to_json}), :layout => false
+    else
+     redirect_to root_path
+    end
   end
 
   def thumbs

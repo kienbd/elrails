@@ -11,7 +11,7 @@ $(function() {
     elFinder.prototype.commands.share = function() {
         this.exec = function(hashes) {
             files  = this.files(hashes),
-            window.prompt("Copy to clipboard: Ctrl+C, Enter","http://localhost:3000/shares/"+hashes);
+            window.prompt("Copy to clipboard: Ctrl+C, Enter",window.location.origin+"/shares/"+hashes);
              //do whatever
         }
         this.getstate = function() {

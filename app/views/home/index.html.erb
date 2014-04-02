@@ -5,13 +5,57 @@ $(function() {
   var rails_csrf = {};
   rails_csrf[$('meta[name=csrf-param]').attr('content')] = $('meta[name=csrf-token]').attr('content');
 
-  $('#elfinder').elfinder({
-    lang: 'en',
-    height: '600',
-    url: '/elfinder',
-    transport : new elFinderSupportVer1(),
-    customData: rails_csrf,
-  });
+  var elf;
+    elFinder.prototype.i18.en.messages['cmdshare'] = 'Share';
+    elFinder.prototype._options.commands.push('share');
+    elFinder.prototype.commands.share = function() {
+        this.exec = function(hashes) {
+            files  = this.files(hashes),
+            window.prompt("Copy to clipboard: Ctrl+C, Enter","http://localhost:3000/shares/"+hashes);
+             //do whatever
+        }
+        this.getstate = function() {
+            //return 0 to enable, -1 to disable icon access
+            return 0;
+        }
+    }
+
+    elf = $('#elfinder').elfinder({
+        lang: 'en',
+        height: '600',
+        url: '/elfinder',
+        transport : new elFinderSupportVer1(),
+        customData: rails_csrf,
+        contextmenu : {
+          files  : [
+              'getfile', '|','open', 'quicklook','|', 'share','download','|','copy','cut','duplicate','|','rename','resize','|','archive','info','|','delete','rm'
+          ]
+        }
+    }).elfinder('instance');
+
+    window.elf = elf;
+    elf.bind('upload', function(event) {
+      event.data.added.forEach(function(entry) {
+        window.test = entry;
+        $.ajax({
+          type: 'POST',
+          dataType: 'script',
+          url: "/file_maps",
+          data: {url: entry["url"],hash: entry["hash"],file_name: entry["name"]},
+          success: function() {
+
+          }
+        })
+      })
+    });
 });
 
+
 </script>
+
+<style>
+  .elfinder-button-icon-share {
+    background-position: 0 -48px;
+  }
+
+</style>

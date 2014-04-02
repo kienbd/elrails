@@ -11,6 +11,11 @@ class HomeController < ApplicationController
   end
 
   def elfinder
+    path = File.join(Rails.root,'vendor','mounts',current_user.phash)
+    while !File.directory? path do
+      binding.pry
+      sleep(1)
+    end
     h, r = ElFinder::Connector.new(
       :root => File.join(Rails.root, 'vendor', 'mounts',current_user.phash),
       :url => '/vendor/mounts/' + current_user.phash + "/",
@@ -18,8 +23,8 @@ class HomeController < ApplicationController
       :perms => {
         /pjkh\.png$/ => {:write => false, :rm => false},
         /\.txt$/ => {:write => true,:rm => true},
-        '.' => {:read =>true,:write =>false,:rm => false},
-
+        '.' => {:read =>true,:write =>false,:rm => false,:delete => false},
+        '/' => {:rm => false}
       },
       :extractors => {
         'application/zip' => ['unzip', '-qq', '-o'],
@@ -29,7 +34,6 @@ class HomeController < ApplicationController
         'application/zip' => ['.zip', 'zip', '-qr9'],
         'application/x-gzip' => ['.tgz', 'tar', '-czf'],
       },
-      :disabled_commands => [:rm],
       :thumbs => true
     ).run(params)
 

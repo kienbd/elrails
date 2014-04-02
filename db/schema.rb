@@ -11,7 +11,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140228055611) do
+ActiveRecord::Schema.define(version: 20140331085607) do
+
+  create_table "file_maps", force: true do |t|
+    t.integer  "user_id"
+    t.string   "phash"
+    t.string   "remote_url"
+    t.string   "file_name"
+    t.boolean  "is_shared",  default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "users", force: true do |t|
     t.string   "email",                  default: "", null: false

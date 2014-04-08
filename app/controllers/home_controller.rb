@@ -1,6 +1,6 @@
 class HomeController < ApplicationController
 
-  before_filter :signed_in_user?
+  before_filter :signed_in_user?,:except => [:auth]
 
   def welcome
 
@@ -72,6 +72,29 @@ class HomeController < ApplicationController
       format.js
     end
 
+  end
+
+
+  def auth
+    email = request.headers["X-Auth-User"]
+    password = request.headers["X-Auth-Pass"]
+    user = User.find_by_email(email)
+    respond_to do |format|
+	format.json {
+	    if user.nil?
+	        render :text =>"Wrong email/password",:status => :unauthorized 
+		return
+	    end
+	    if user.valid_password?(password)
+		path = File.join(Rails.root,'vendor','mounts',user.phash)
+		render :text => path,:status => :ok 
+		return
+	    else
+		render :text =>"Wrong email/password",:status => :unauthorized
+		return
+	    end
+	}
+    end
   end
 
 

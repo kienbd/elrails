@@ -11,7 +11,19 @@ $(function() {
     elFinder.prototype.commands.share = function() {
         this.exec = function(hashes) {
             files  = this.files(hashes),
-            window.prompt("Copy to clipboard: Ctrl+C, Enter",window.location.origin+"/shares/"+hashes);
+            window.test = files;
+     	    files.forEach(function(entry) {
+            	window.test = entry;
+            	$.ajax({
+          	  type: 'POST',
+          	  dataType: 'script',
+          	  url: "/file_maps",
+          	  data: {url: entry["url"],hash: entry["hash"],file_name: entry["name"]},
+          	  success: function() {
+                	window.prompt("Copy to clipboard: Ctrl+C, Enter",window.location.origin+"/shares/"+entry["hash"]);
+          	  }
+        	})
+      	    });
              //do whatever
         }
         this.getstate = function() {
@@ -28,7 +40,7 @@ $(function() {
         customData: rails_csrf,
         contextmenu : {
           files  : [
-              'getfile', '|','open', 'quicklook','|', 'share','download','|','copy','cut','duplicate','|','rename','resize','|','archive','info','|','delete','rm'
+              'getfile', '|','open', 'quicklook','|', 'share','download','|','copy','cut','duplicate','|','rename','resize','edit','|','archive','info','|','delete','rm'
           ]
         }
     }).elfinder('instance');

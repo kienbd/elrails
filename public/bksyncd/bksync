@@ -1,0 +1,65 @@
+#!/bin/bash
+
+set -e
+
+#CHECK CONFIG FILE VALID
+if [ -z $1 ]; then 
+   echo "config file is unset"; 
+   exit 1;
+fi
+
+if [ ! -f $1 ]; then
+  echo "config file not found";
+  exit 1;
+fi
+
+CONFIGFILE=$1
+RESPONSE=/var/log/bksync-res.log
+
+# CHECK RESPONSE
+if [ ! -f $RESPONSE ]; then
+  echo "Run test first!";
+  exit 1;
+else
+  text=$(cat $RESPONSE)
+  rm -rf $RESPONSE
+fi
+
+#SSH
+eval `ssh-agent`
+ssh-add ~/.ssh/bkswift_id_rsa
+
+#READ CONFIG
+eval `sed '/^ *#/d;s/:/ /;' < "$CONFIGFILE" | while read key val
+do
+    #verify here
+    str="$key='$val'"
+    echo "$str"
+done`
+
+
+#VALIDATE CONFIGS
+if [ -z ${host+x} ]; then 
+   echo "host is unset"; 
+   exit 1;
+fi
+
+if [ -z ${path+x} ]; then 
+   echo "path is unset"; 
+   exit 1;
+fi
+
+if [ -z ${interval+x} ]; then 
+   echo "interval is unset"; 
+   exit 1;
+fi
+
+#SYNC SERVER
+while true;do
+  #rsync -avzrue --delete-excluded $host:/root/elrails/vendor/mounts/51cb08097da6354e8e386555b3fb1b4e78bcd6ef/ $path
+  #rsync -avzrue --delete-excluded $path $host:/root/elrails/vendor/mounts/51cb08097da6354e8e386555b3fb1b4e78bcd6ef/
+  rsync -avzru "$host:$text/" "$path/"
+  rsync -avzru "$path/" "$host:$text/"
+  sleep $interval
+done
+

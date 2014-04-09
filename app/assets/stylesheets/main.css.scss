@@ -1,0 +1,58 @@
+
+@import 'bootstrap/glyphicons';
+
+body {
+ // font-family: "Open Sans","lucida grande","Segoe UI",arial,verdana,"lucida sans unicode",tahoma,sans-serif;
+}
+
+.page-wrapper {
+  width: 95%;
+  margin: 0 auto;
+
+}
+header {
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e5e5e5;
+  padding-top:10px;
+  margin-bottom: 5px;
+}
+
+div.logo-holder {
+  float:left;
+  .logo > a {
+    text-decoration: none;
+  }
+  .logo > a > img {
+    vertical-align: middle;
+    height: 60px;
+  }
+  .logo > a > span {
+    color: rgb(13,94,171);
+    font-weight: bold;
+    font-size: 26px;
+    font-family: "Open Sans","lucida grande","Segoe UI",arial,verdana,"lucida sans unicode",tahoma,sans-serif;
+    margin-left: -18px;
+  }
+}
+
+ul.top-nav {
+  float: right;
+  list-style: none;
+  li.nav-link {
+    padding-right: 20px;
+    display: inline-block;
+    color: #2895f1;
+    a {
+      color: #2895f1;
+      text-decoration: none;
+      span {
+        font-size: 19px;
+      }
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+

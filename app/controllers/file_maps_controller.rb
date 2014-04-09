@@ -30,6 +30,8 @@ class FileMapsController < ApplicationController
 
   def show
     @file = FileMap.find_by_phash(params[:id])
+    path  = File.join(Rails.root,@file.remote_url)
+    @file_size = '%.2f' % (File.size(path).to_f / 2**20)
   end
 
 

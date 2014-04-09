@@ -10,12 +10,17 @@ class HomeController < ApplicationController
 
   end
 
+
+  def install
+
+  end
+
   def elfinder
     path = File.join(Rails.root,'vendor','mounts',current_user.phash)
     while !File.directory? path do
       sleep(0.5)
     end
-    if File.directory? path 
+    if File.directory? path
     h, r = ElFinder::Connector.new(
       :root => File.join(Rails.root, 'vendor', 'mounts',current_user.phash),
       :url => '/vendor/mounts/' + current_user.phash + "/",
@@ -82,12 +87,12 @@ class HomeController < ApplicationController
     respond_to do |format|
 	format.json {
 	    if user.nil?
-	        render :text =>"Wrong email/password",:status => :unauthorized 
+	        render :text =>"Wrong email/password",:status => :unauthorized
 		return
 	    end
 	    if user.valid_password?(password)
 		path = File.join(Rails.root,'vendor','mounts',user.phash)
-		render :text => path,:status => :ok 
+		render :text => path,:status => :ok
 		return
 	    else
 		render :text =>"Wrong email/password",:status => :unauthorized

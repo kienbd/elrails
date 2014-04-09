@@ -34,13 +34,13 @@ $(function() {
 
     elf = $('#elfinder').elfinder({
         lang: 'en',
-        height: '600',
+        height: '500',
         url: '/elfinder',
         transport : new elFinderSupportVer1(),
         customData: rails_csrf,
         contextmenu : {
           files  : [
-              'getfile', '|','open', 'quicklook','|', 'share','download','|','copy','cut','duplicate','|','rename','resize','edit','|','archive','info','|','delete','rm'
+              'getfile', '|','open', 'quicklook','|', 'share','download','|','copy','cut','duplicate','|','rename','resize','edit','|','archive','|','delete','rm'
           ]
         }
     }).elfinder('instance');

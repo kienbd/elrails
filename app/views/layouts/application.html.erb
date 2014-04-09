@@ -7,13 +7,12 @@
   <%= csrf_meta_tag %>
 </head>
 <body>
-  <header>
-    <a href="/users/sign_out" data-method="delete">Signout</a>
-    <form action="/createContainer" data-remote='true'>
-	    <input type='text' name="mount">
-            <input type='submit' value='submit'>
-    </form>
-  </header>
-  <%= yield %>
+  <div class="page-wrapper">
+    <%= render 'layouts/header' %>
+    <div class="wrapper-container">
+      <%= yield %>
+    </div>
+    <%= render 'layouts/footer' %>
+  </div>
 </body>
 </html>

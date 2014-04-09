@@ -1,10 +1,13 @@
+<%= stylesheet_link_tag  'custom' %>
 
-
-
-<h4 style="text-align: center"> <%= @file.file_name %> </h4>
-<p style="text-align: center">
-<button onclick="download_file(this)"> Download </button>
-</p>
+<div class="download-pane well well-lg">
+  <h3 style="text-align: center"> <%= @file.file_name %> </h3>
+  <i class="glyphicon glyphicon-folder-close"></i>
+  <div class="file-size">  <%= @file_size %> Mb </div>
+  <p style="text-align: center">
+    <button class="btn btn-primary btn-block" onclick="download_file(this)"> Download </button>
+  </p>
+</div>
 
 
 

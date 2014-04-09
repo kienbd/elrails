@@ -13,6 +13,9 @@ gem 'el_finder'
 gem 'thin'
 gem 'therubyracer'
 gem 'pry'
+# Bootstrap 3 RC2
+gem 'anjlab-bootstrap-rails', :require => 'bootstrap-rails', :github => 'anjlab/bootstrap-rails', :branch => '3.0.0'
+gem 'bootstrap-glyphicons'
 
 
 

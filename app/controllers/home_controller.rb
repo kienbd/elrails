@@ -1,6 +1,39 @@
 class HomeController < ApplicationController
 
   before_filter :signed_in_user?,:except => [:auth]
+  #before_filter CASClient::Frameworks::Rails::Filter,:except => [:auth,:welcome]
+  #before_filter CASClient::Frameworks::Rails::GatewayFilter,:only => [:welcome]
+  #before_filter :setup_cas_user,:except => [:auth]
+
+  def setup_cas_user
+      # save the login_url into an @var so that we can later use it in views (eg a login form)
+      #@login_url = CASClient::Frameworks::Rails::Filter.login_url(self)
+      return unless session[:cas_user].present?
+
+      # so now we go find the user in our db
+      @current_user = User.find_by_email(session[:cas_user])
+      sign_in(@current_user) if @current_user.present?
+  end
+
+   def cas_login
+    credentials = { :username => params[:login], :password => params[:password]}
+
+    # this will let you reuse existing config
+    client = CASClient::Frameworks::Rails::Filter
+
+    # pass in a URL to return-to on success
+    @resp = client.login_to_service(self, credentials, dashboard_url)
+    if @resp.is_failure?
+      # if login failed, redisplay the page that has your login-form on it
+      flash.now[:error] = "That username or password was not recognised. Please try again."
+      @user = User.new
+      render :action => 'new'
+    else
+      # login_to_service has appended the new ticket onto the given URL
+      # so we redirect the user there to complete the login procedure
+      return redirect_to(@resp.service_redirect_url)
+    end
+  end
 
   def welcome
 
@@ -81,24 +114,25 @@ class HomeController < ApplicationController
 
 
   def auth
+    binding.pry
     email = request.headers["X-Auth-User"]
     password = request.headers["X-Auth-Pass"]
     user = User.find_by_email(email)
     respond_to do |format|
-	format.json {
-	    if user.nil?
-	        render :text =>"Wrong email/password",:status => :unauthorized
-		return
-	    end
-	    if user.valid_password?(password)
-		path = File.join(Rails.root,'vendor','mounts',user.phash)
-		render :text => path,:status => :ok
-		return
-	    else
-		render :text =>"Wrong email/password",:status => :unauthorized
-		return
-	    end
-	}
+      format.json {
+          if user.nil?
+              render :text =>"Wrong email/password",:status => :unauthorized
+        return
+          end
+          if user.valid_password?(password)
+        path = File.join(Rails.root,'vendor','mounts',user.phash)
+        render :text => path,:status => :ok
+        return
+          else
+        render :text =>"Wrong email/password",:status => :unauthorized
+        return
+          end
+      }
     end
   end
 

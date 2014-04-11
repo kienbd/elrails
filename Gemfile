@@ -18,8 +18,10 @@ gem 'anjlab-bootstrap-rails', :require => 'bootstrap-rails', :github => 'anjlab/
 gem 'bootstrap-glyphicons'
 
 
-
 gem 'devise'
+gem 'devise_cas_authenticatable'
+gem 'rubycas-client'
+
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.

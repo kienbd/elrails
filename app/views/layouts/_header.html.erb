@@ -1,13 +1,13 @@
 <header id="fixed-header">
-  <% if user_signed_in? %>
     <div class="logo-holder">
       <div class="logo">
         <a href="/">
           <img src="/cloud-database.png"/>
-          <span> BK STORAGE </span>
+    <span> BK STORAGE </span>
         </a>
       </div>
     </div>
+  <% if user_signed_in? %>
     <ul class="top-nav">
       <li class="nav-link">
         <a href="/install">
@@ -22,7 +22,8 @@
         <i class=""></i>
       </li>
       <li class="nav-link">
-        <a href="/users/sign_out" data-method="delete">
+        <%# <a href="/users/sign_out" data-method="delete"> %>
+          <a href="/logout">
           <span>
             Signout
           </span>

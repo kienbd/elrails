@@ -1,9 +1,9 @@
 class HomeController < ApplicationController
 
-  before_filter :signed_in_user?,:except => [:auth]
-  #before_filter CASClient::Frameworks::Rails::Filter,:except => [:auth,:welcome]
-  #before_filter CASClient::Frameworks::Rails::GatewayFilter,:only => [:welcome]
-  #before_filter :setup_cas_user,:except => [:auth]
+  #before_filter :signed_in_user?,:except => [:auth]
+  before_filter CASClient::Frameworks::Rails::Filter,:except => [:auth,:dbticket,:welcome]
+  before_filter CASClient::Frameworks::Rails::GatewayFilter,:only => [:welcome]
+  before_filter :setup_cas_user,:except => [:auth,:dbticket]
 
   def setup_cas_user
       # save the login_url into an @var so that we can later use it in views (eg a login form)
@@ -15,28 +15,13 @@ class HomeController < ApplicationController
       sign_in(@current_user) if @current_user.present?
   end
 
-   def cas_login
-    credentials = { :username => params[:login], :password => params[:password]}
-
-    # this will let you reuse existing config
-    client = CASClient::Frameworks::Rails::Filter
-
-    # pass in a URL to return-to on success
-    @resp = client.login_to_service(self, credentials, dashboard_url)
-    if @resp.is_failure?
-      # if login failed, redisplay the page that has your login-form on it
-      flash.now[:error] = "That username or password was not recognised. Please try again."
-      @user = User.new
-      render :action => 'new'
-    else
-      # login_to_service has appended the new ticket onto the given URL
-      # so we redirect the user there to complete the login procedure
-      return redirect_to(@resp.service_redirect_url)
-    end
+  def logout
+    # optionally do some local cleanup here
+    CASClient::Frameworks::Rails::Filter.logout(self,"http://localhost:3000")
   end
 
   def welcome
-
+    redirect_to index_path if user_signed_in?
   end
 
   def index
@@ -114,24 +99,66 @@ class HomeController < ApplicationController
 
 
   def auth
-    binding.pry
+
     email = request.headers["X-Auth-User"]
     password = request.headers["X-Auth-Pass"]
-    user = User.find_by_email(email)
+
+    # email = "user1@gmail.com"
+    # password = "123456789"
+    credentials = { :username => email, :password => password}
+
+    # this will let you reuse existing config
+    client = CASClient::Frameworks::Rails::Filter
+
+    # pass in a URL to return-to on success
+    @resp = client.login_to_service(self, credentials, "http://localhost:3000")
+
     respond_to do |format|
       format.json {
-          if user.nil?
-              render :text =>"Wrong email/password",:status => :unauthorized
-        return
-          end
-          if user.valid_password?(password)
-        path = File.join(Rails.root,'vendor','mounts',user.phash)
-        render :text => path,:status => :ok
-        return
-          else
-        render :text =>"Wrong email/password",:status => :unauthorized
-        return
-          end
+        if @resp.ticket.nil?
+            render :text =>"Wrong email/password",:status => :unauthorized
+        else
+            user = User.find_by_email(email)
+            path = File.join(Rails.root,'vendor','mounts',user.phash)
+            render :text => path,:status => :ok
+        end
+      }
+    end
+
+    # email = request.headers["X-Auth-User"]
+    # password = request.headers["X-Auth-Pass"]
+    # user = User.find_by_email(email)
+    # respond_to do |format|
+      # format.json {
+          # if user.nil?
+              # render :text =>"Wrong email/password",:status => :unauthorized
+        # return
+          # end
+          # if user.valid_password?(password)
+        # path = File.join(Rails.root,'vendor','mounts',user.phash)
+        # render :text => path,:status => :ok
+        # return
+          # else
+        # render :text =>"Wrong email/password",:status => :unauthorized
+        # return
+          # end
+      # }
+    # end
+  end
+
+
+  def dbticket
+    email = request.headers["X-User-Email"]
+    #email = params[:email]
+    user = User.new(:email => email,
+                :password => Devise.friendly_token[10,20])
+    respond_to do |format|
+      format.json {
+        if user.save
+          render :text => "Success",:status => :ok
+        else
+          render :text => "Failed",:status => :error
+        end
       }
     end
   end

@@ -1,6 +1,6 @@
 Elrails::Application.routes.draw do
   devise_for :users,
-    #:skip =>[:registrations,:sessions],
+    :skip =>[:registrations,:sessions],
     :controllers => {
       :registrations => "users/registrations",
       :sessions => "users/sessions"
@@ -9,14 +9,15 @@ Elrails::Application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  #root 'home#welcome'
-  root 'home#index'
+  root 'home#welcome'
+  #root 'home#index'
 
-  #get 'index' => 'home#index'
+  get 'index' => 'home#index'
 
   get 'elfinder' => 'home#elfinder'
   post 'elfinder' => 'home#elfinder'
   put 'elfinder' => 'home#elfinder'
+  post 'dbticket' => 'home#dbticket'
 
   get '/vendor/mounts/:user_hash/.thumbs/:id' =>  'home#thumbs'
   get '/vendor/mounts/:user_hash/:preview' => 'home#previews',constraints: {
@@ -26,6 +27,7 @@ Elrails::Application.routes.draw do
   get '/createContainer' => 'home#createContainer'
   get '/auth' => 'home#auth'
   get '/install' => 'home#install'
+  get 'logout' => 'home#logout'
 
   get '/shares/:id' => 'file_maps#show'
   resources :file_maps

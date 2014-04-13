@@ -17,10 +17,14 @@ class HomeController < ApplicationController
 
   def logout
     # optionally do some local cleanup here
-    CASClient::Frameworks::Rails::Filter.logout(self,"http://localhost:3000")
+    #return_path = "#{request.protocol}#{request.host_with_port}"
+    return_path = APP_CONFIG["url"]
+    CASClient::Frameworks::Rails::Filter.logout(self,return_path)
   end
 
   def welcome
+    #@return_path = "#{request.protocol}#{request.host_with_port}"
+    @return_path = APP_CONFIG["url"]
     redirect_to index_path if user_signed_in?
   end
 
@@ -36,7 +40,7 @@ class HomeController < ApplicationController
   def elfinder
     path = File.join(Rails.root,'vendor','mounts',current_user.phash)
     while !File.directory? path do
-      sleep(0.5)
+      sleep(2)
     end
     if File.directory? path
     h, r = ElFinder::Connector.new(
@@ -111,7 +115,9 @@ class HomeController < ApplicationController
     client = CASClient::Frameworks::Rails::Filter
 
     # pass in a URL to return-to on success
-    @resp = client.login_to_service(self, credentials, "http://localhost:3000")
+    #return_path = "#{request.protocol}#{request.host_with_port}"
+    return_path = APP_CONFIG["url"]
+    @resp = client.login_to_service(self, credentials,return_path)
 
     respond_to do |format|
       format.json {

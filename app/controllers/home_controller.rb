@@ -9,10 +9,23 @@ class HomeController < ApplicationController
       # save the login_url into an @var so that we can later use it in views (eg a login form)
       #@login_url = CASClient::Frameworks::Rails::Filter.login_url(self)
       return unless session[:cas_user].present?
+      return if user_signed_in?
 
       # so now we go find the user in our db
       @current_user = User.find_by_email(session[:cas_user])
-      sign_in(@current_user) if @current_user.present?
+      if @current_user.nil?
+  	user = User.new(:email => session[:cas_user],
+                :password => Devise.friendly_token[10,20])
+        if user.save
+          sleep(1)
+          sign_in(user)
+        else
+          return_path = APP_CONFIG["url"]
+          CASClient::Frameworks::Rails::Filter.logout(self,return_path)
+        end
+      else
+        sign_in(@current_user) if @current_user.present?
+      end 
   end
 
   def logout
@@ -44,7 +57,7 @@ class HomeController < ApplicationController
     end
     if File.directory? path
     h, r = ElFinder::Connector.new(
-      :root => File.join(Rails.root, 'vendor', 'mounts',current_user.phash),
+      :root => path,
       :url => '/vendor/mounts/' + current_user.phash + "/",
       :home => current_user.email,
       :perms => {
@@ -67,7 +80,6 @@ class HomeController < ApplicationController
     headers.merge!(h)
     render (r.empty? ? {:nothing => true} : {:text => r.to_json}), :layout => false
     else
-     redirect_to root_path
     end
   end
 
@@ -86,6 +98,8 @@ class HomeController < ApplicationController
 
 
   def createContainer
+    if params[:mount].nil? || params[:mount].empty?
+    else 
     path = File.join(Rails.root,'vendor','mounts',current_user.phash,params[:mount])
     if !File.directory? path
 	    # FileUtils.mkdir(path) if !File.directory? path
@@ -93,6 +107,7 @@ class HomeController < ApplicationController
 	    `source "#{Rails.root.join('lib','bash','test.sh').to_s}" "#{current_user.email}" "#{container_name}" "#{path}"`
     else
 
+    end
     end
     respond_to do |format|
       format.html

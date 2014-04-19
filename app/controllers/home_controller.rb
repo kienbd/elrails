@@ -1,9 +1,9 @@
 class HomeController < ApplicationController
 
   #before_filter :signed_in_user?,:except => [:auth]
-  before_filter CASClient::Frameworks::Rails::Filter,:except => [:auth,:dbticket,:welcome]
+  before_filter CASClient::Frameworks::Rails::Filter,:except => [:auth,:dbticket,:welcome,:synkey]
   before_filter CASClient::Frameworks::Rails::GatewayFilter,:only => [:welcome]
-  before_filter :setup_cas_user,:except => [:auth,:dbticket]
+  before_filter :setup_cas_user,:except => [:auth,:dbticket,:synkey]
 
   def setup_cas_user
       # save the login_url into an @var so that we can later use it in views (eg a login form)
@@ -104,7 +104,7 @@ class HomeController < ApplicationController
     if !File.directory? path
 	    # FileUtils.mkdir(path) if !File.directory? path
 	    container_name = current_user.phash + params[:mount]
-	    `source "#{Rails.root.join('lib','bash','test.sh').to_s}" "#{current_user.email}" "#{container_name}" "#{path}"`
+	    `source "#{Rails.root.join('lib','bash','createContainer.sh').to_s}" "#{current_user.email}" "#{container_name}" "#{path}"`
     else
 
     end
@@ -181,6 +181,18 @@ class HomeController < ApplicationController
           render :text => "Failed",:status => :error
         end
       }
+    end
+  end
+  
+  def synkey
+    key = params[:file].read
+    key = key.gsub(/\n/,"")
+    `source "#{Rails.root.join('lib','bash','synkey.sh').to_s}" "#{key}"`
+    respond_to do |format|
+     format.json {
+	render :text => "alo" ,:status => :ok
+
+     }
     end
   end
 

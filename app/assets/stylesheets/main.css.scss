@@ -57,8 +57,9 @@ ul.top-nav {
 
 #new-container {
   input.form-control {
-display: block;
-width: 100%;
+display: inline-block;
+width: 200;
+margin-right: 0px;
 height: 30px;
 padding: 1px 12px;
 font-size: 14px;
@@ -97,7 +98,6 @@ border-radius: 4px;
 color: #333;
 background-color: #fff;
 border-color: #ccc;
-margin-bottom: 5px;
 &:hover {
 color: #333;
 background-color: #ebebeb;

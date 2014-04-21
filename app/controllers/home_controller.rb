@@ -140,8 +140,12 @@ class HomeController < ApplicationController
             render :text =>"Wrong email/password",:status => :unauthorized
         else
             user = User.find_by_email(email)
-            path = File.join(Rails.root,'vendor','mounts',user.phash)
-            render :text => path,:status => :ok
+	    if user.nil?
+  	      render :text=> "Please activate your account",:status => :forbidden
+            else
+              path = File.join(Rails.root,'vendor','mounts',user.phash)
+              render :text => path,:status => :ok
+	    end
         end
       }
     end

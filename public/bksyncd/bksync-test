@@ -36,8 +36,15 @@ if [ -z ${path+x} ]; then
    exit 1;
 fi
 
+if [ ! -d $path ];then
+  echo "Path not found"
+  rm -rf /var/log/bksync-old-list.txt
+  rm -rf /tmp/bksync-current-list.txt
+  exit 1
+fi
+
 if [ -z ${interval+x} ]; then
-   echo "path is unset";
+   echo "interval is unset";
    exit 1;
 fi
 
@@ -51,7 +58,8 @@ if [ -z ${email+x} ] || [ -z ${password+x} ]; then
    read -s password
 fi
 
-status=$(curl -sL -w "%{http_code}\\n" -H "X-Auth-User: $email" -H "X-Auth-Pass: $password" "$host:3000/sync" -o $RESPONSE)
+
+status=$(curl -sL -w "%{http_code}\\n" -H "X-Auth-User: $email" -H "X-Auth-Pass: $password" "$host/auth" -o $RESPONSE)
 text=$(cat $RESPONSE)
 RES_LOCAL=$text
 
@@ -61,7 +69,8 @@ case "$status" in
     echo "Authentication Success!"
     echo "Testing connection ... "
     RETVAL=0
-    rsync -anvzru "$host:$text/" "$path/" > /dev/null 2>&1 || RETVAL=1
+    #rsync -anvzru "$host:$text/" "$path/" > /dev/null 2>&1 ||  RETVAL=1
+    rsync -anvzru -e "ssh -i /home/$(whoami)/.ssh/bkswift_id_rsa"  "bkstorage@$host:$text/" "$path/"  ||  RETVAL=1
     exit $RETVAL
     ;;
 "401")
@@ -72,6 +81,7 @@ case "$status" in
     ;;
 *)
     exit 1
+    echo "Service not available"
     ;;
 esac
 

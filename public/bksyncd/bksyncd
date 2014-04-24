@@ -10,7 +10,7 @@
 config='/etc/bksync.conf'
 bksync='/usr/local/bin/bksync'
 bksync_test='/usr/local/bin/bksync-test'
-lockfile='/var/lock/subsys/bksync'
+lockfile='/var/lock/subsys/bksyncd/bksync'
 pidfile='/var/run/bksync.pid'
 logfile='/var/log/bksync.log'
 resfile='/var/log/bksync-res.log'

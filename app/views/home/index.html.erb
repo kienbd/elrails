@@ -44,7 +44,7 @@ $(function() {
     }
 
     elf = $('#elfinder').elfinder({
-        lang: 'vi',
+        lang: "<%= I18n.locale.to_s %>",
         height: '500',
         url: '/elfinder',
         transport : new elFinderSupportVer1(),

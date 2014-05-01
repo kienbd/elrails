@@ -19,6 +19,7 @@ Elrails::Application.routes.draw do
   put 'elfinder' => 'home#elfinder'
   post 'dbticket' => 'home#dbticket'
   post 'synkey' => 'home#synkey'
+  get 'locale' => 'home#locale'
 
   get '/vendor/mounts/:user_hash/.thumbs/:id' =>  'home#thumbs'
   get '/vendor/mounts/:user_hash/:preview' => 'home#previews',constraints: {

@@ -201,6 +201,14 @@ class HomeController < ApplicationController
     end
   end
 
+  def locale
+    session[:locale] = params[:locale]
+    I18n.locale = params[:locale].to_sym
+    respond_to do |format|
+      format.js
+    end
+
+  end
 
   def signed_in_user?
     unless user_signed_in?

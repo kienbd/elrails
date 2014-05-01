@@ -10,6 +10,6 @@
  *= require jquery_ujs.js
  *= require elfinder/elfinder.min.js
  *= require elfinder/proxy/elFinderSupportVer1.js
- *= require elfinder/i18n/elfinder.ru.js
+ *= require elfinder/i18n/elfinder.vi.js
  *= require twitter/bootstrap
  */

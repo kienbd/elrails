@@ -1,9 +1,9 @@
 class HomeController < ApplicationController
 
   #before_filter :signed_in_user?,:except => [:auth]
-  before_filter CASClient::Frameworks::Rails::Filter,:except => [:auth,:dbticket,:welcome,:synkey]
-  before_filter CASClient::Frameworks::Rails::GatewayFilter,:only => [:welcome]
-  before_filter :setup_cas_user,:except => [:auth,:dbticket,:synkey]
+  #before_filter CASClient::Frameworks::Rails::Filter,:except => [:auth,:dbticket,:welcome]
+  #before_filter CASClient::Frameworks::Rails::GatewayFilter,:only => [:welcome]
+  #before_filter :setup_cas_user,:except => [:auth,:dbticket]
 
   def setup_cas_user
       # save the login_url into an @var so that we can later use it in views (eg a login form)
@@ -25,7 +25,7 @@ class HomeController < ApplicationController
         end
       else
         sign_in(@current_user) if @current_user.present?
-      end 
+      end
   end
 
   def logout
@@ -37,6 +37,7 @@ class HomeController < ApplicationController
 
   def welcome
     #@return_path = "#{request.protocol}#{request.host_with_port}"
+    I18n.locale = :vi
     @return_path = APP_CONFIG["url"]
     redirect_to index_path if user_signed_in?
   end
@@ -99,7 +100,7 @@ class HomeController < ApplicationController
 
   def createContainer
     if params[:mount].nil? || params[:mount].empty?
-    else 
+    else
     path = File.join(Rails.root,'vendor','mounts',current_user.phash,params[:mount])
     if !File.directory? path
 	    # FileUtils.mkdir(path) if !File.directory? path
@@ -187,7 +188,7 @@ class HomeController < ApplicationController
       }
     end
   end
-  
+
   def synkey
     key = params[:file].read
     key = key.gsub(/\n/,"")

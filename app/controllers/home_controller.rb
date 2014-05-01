@@ -1,9 +1,9 @@
 class HomeController < ApplicationController
 
-  #before_filter :signed_in_user?,:except => [:auth]
-  before_filter CASClient::Frameworks::Rails::Filter,:except => [:auth,:dbticket,:welcome]
-  before_filter CASClient::Frameworks::Rails::GatewayFilter,:only => [:welcome]
-  before_filter :setup_cas_user,:except => [:auth,:dbticket]
+  before_filter :signed_in_user?,:except => [:auth]
+  #before_filter CASClient::Frameworks::Rails::Filter,:except => [:auth,:dbticket,:welcome]
+  #before_filter CASClient::Frameworks::Rails::GatewayFilter,:only => [:welcome]
+  #before_filter :setup_cas_user,:except => [:auth,:dbticket]
 
   def setup_cas_user
       # save the login_url into an @var so that we can later use it in views (eg a login form)

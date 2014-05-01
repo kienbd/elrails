@@ -1,2 +1,3 @@
 
-echo $1 >> $HOME/.ssh/authorized_keys2
+echo $1 >> $HOME/.ssh/authorized_keys
+chmod 600 $HOME/.ssh/authorized_keys

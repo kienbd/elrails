@@ -1,9 +1,5 @@
 #!bin/bash
 
-echo $1 > $HOME/test.txt
-echo $2 >> $HOME/test.txt
-echo $3 >> $HOME/test.txt
-
 USER=$1
 CONTAINER=$2
 PATH=$3

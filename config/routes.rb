@@ -1,6 +1,6 @@
 Elrails::Application.routes.draw do
   devise_for :users,
-    #:skip =>[:registrations,:sessions],
+    :skip =>[:registrations,:sessions],
     :controllers => {
       :registrations => "users/registrations",
       :sessions => "users/sessions"

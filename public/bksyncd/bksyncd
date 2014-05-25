@@ -7,13 +7,15 @@
 . /etc/init.d/functions
 # Start the service FOO
 
-config='/etc/bksync.conf'
-bksync='/usr/local/bin/bksync'
-bksync_test='/usr/local/bin/bksync-test'
-lockfile='/var/lock/subsys/bksyncd/bksync'
-pidfile='/var/run/bksync.pid'
-logfile='/var/log/bksync.log'
-resfile='/var/log/bksync-res.log'
+
+USER=$(whoami)
+config=/home/$USER/.bksyncd/bksync.conf
+bksync=/home/$USER/.bksyncd/bin/bksync
+bksync_test=/home/$USER/.bksyncd/bin/bksync-test
+lockfile="/home/$USER/.bksyncd/lock/bksync"
+pidfile=/home/$USER/.bksyncd/run/bksync.pid
+logfile=/home/$USER/.bksyncd/log/bksync.log
+resfile=/home/$USER/.bksyncd/log/bksync-res.log
 prog='bksync'
 RETVAL=0
 
@@ -44,6 +46,7 @@ start() {
 }
 # Restart the service loop
 stop() {
+        #. /etc/init.d/functions
         killproc bksync
         ### Now, delete the lock file ###
         #initlog -c "echo -n Stoping loop server: "

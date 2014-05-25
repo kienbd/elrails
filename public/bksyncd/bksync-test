@@ -1,10 +1,12 @@
 #!/bin/bash
 
-RESPONSE=/var/log/bksync-res.log
+
+USER=$(whoami)
+RESPONSE=/home/$USER/.bksyncd/log/bksync-res.log
 CONFIGFILE=$1
 
-eval `ssh-agent` >> /var/log/bksync-auth.log 2>&1
-ssh-add ~/.ssh/bkswift_id_rsa >> /var/log/bksync-auth.log 2>&1
+eval `ssh-agent` >> /home/$USER/.bksyncd/log/bksync-auth.log 2>&1
+ssh-add ~/.ssh/bkswift_id_rsa >> /home/$USER/.bksyncd/log/bksync-auth.log 2>&1
 
 set -e
 
@@ -38,8 +40,8 @@ fi
 
 if [ ! -d $path ];then
   echo "Path not found"
-  rm -rf /var/log/bksync-old-list.txt
-  rm -rf /tmp/bksync-current-list.txt
+  rm -rf /home/$USER/.bksyncd/log/bksync-old-list.txt
+  rm -rf /home/$USER/.bksyncd/tmp/bksync-current-list.txt
   exit 1
 fi
 
@@ -48,8 +50,8 @@ if [ -z ${interval+x} ]; then
    exit 1;
 fi
 
-if [ -z ${email+x} ] || [ -z ${password+x} ]; then  
-   echo "Email/Password are unset"  
+if [ -z ${email+x} ] || [ -z ${password+x} ]; then
+   echo "Email/Password are unset"
    echo "Please login to continue"
    echo "########################"
    echo -n "Email: "
@@ -70,7 +72,7 @@ case "$status" in
     echo "Testing connection ... "
     RETVAL=0
     #rsync -anvzru "$host:$text/" "$path/" > /dev/null 2>&1 ||  RETVAL=1
-    rsync -anvzru -e "ssh -i /home/$(whoami)/.ssh/bkswift_id_rsa"  "bkstorage@$host:$text/" "$path/"  ||  RETVAL=1
+    rsync -anvzru -e "ssh -i /home/$USER/.ssh/bkswift_id_rsa"  "bkstorage@$host:$text/" "$path/" > /dev/null 2>&1  ||  RETVAL=1
     exit $RETVAL
     ;;
 "401")

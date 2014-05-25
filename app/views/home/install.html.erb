@@ -12,7 +12,7 @@
         </span>
       </div>
       <div class="install-link">
-        <button class="btn btn-primary btn-block">
+        <button class="btn btn-primary btn-block" onclick="download_file(this)">
           <%= t('download_btn') %>
         </button>
       </div>
@@ -22,9 +22,9 @@
     <div class="highlight col-md-6">
       <pre>
         <code class="bash">
-          <span> $ wget http://localhost:8000/bksync/install.sh </span>
-          <span> $ sudo source install.sh </span>
-          <span> $ sudo service bksyncd start </span>
+          <span> $ wget http://192.168.50.13/bksyncd/install.sh </span>
+          <span> $ source install.sh </span>
+          <span> $ service bksyncd start </span>
         </code>
 
       </pre>
@@ -33,3 +33,9 @@
   </div>
 
 </div>
+
+<script type="text/javascript">
+  var download_file = function(e) {
+    $('<iframe style="display:none" src="'+"/bksyncd/install.sh"+'"/>').appendTo("body");
+  }
+</script>

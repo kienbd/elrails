@@ -4,47 +4,52 @@ REMOTE_SERVER=192.168.50.13
 #
 ##Gen SSH
 if [ ! -f ~/.ssh/bkswift_id_rsa ]; then
-  ssh-keygen -t rsa -C "client" -N '' -f ~/.ssh/bkswift_id_rsa
+  ssh-keygen -t rsa -C "client" -N '' -f ~/.ssh/bkswift_id_rsa > /dev/null 2>&1
 fi
 #
 ##SSH agent
 eval `ssh-agent`
-ssh-add ~/.ssh/bkswift_id_rsa
+ssh-add ~/.ssh/bkswift_id_rsa > /dev/null 2>&1
 #
 ##Copy to Server
 cd $HOME/.ssh/
 curl -X POST --form "file=@bkswift_id_rsa.pub"  http://192.168.50.13/synkey
 cd -
-#cat ~/.ssh/bkswift_id_rsa.pub | ssh root@$REMOTE_SERVER 'cat - >> ~/.ssh/authorized_keys2;chmod 44 ~/.ssh/authorized_keys2'
-#ssh root@$REMOTE_SERVER 'chmod 700 .ssh'
 #
 ##Install rsync
-
 #APT
-command -v apt >/dev/null 2>&1 && sudo apt-get install -y rsync
-#Yum
-command -v yum >/dev/null 2>&1 && sudo yum install -y rsync
+#command -v apt >/dev/null 2>&1 && sudo apt-get install -y rsync
+##Yum
+#command -v yum >/dev/null 2>&1 && sudo yum install -y rsync
 
 #Setup BkSync
+mkdir -p $HOME/.bksyncd
+mkdir -p $HOME/.bksyncd/{bin,log,lock,run,tmp}
+touch $HOME/.bksyncd/bksync.conf
 
 #download binary
-mkdir -p /tmp/bksync-service
-#curl
-curl -o /tmp/bksync-service/bksync-test  http://$REMOTE_SERVER:3000/bksyncd/bksync-test
-curl -o /tmp/bksync-service/bksync http://$REMOTE_SERVER:3000/bksyncd/bksync
-curl -o /tmp/bksync-service/bksyncd http://$REMOTE_SERVER:3000/bksyncd/bksyncd
-echo "host: $REMOTE_SERVER" > /tmp/bksync-service/bksync.conf
-echo "inverval: 30" >> /tmp/bksync-service/bksync.conf
-#...
+##curl
+curl -o "$HOME/.bksyncd/bin/bksync-test"  "http://$REMOTE_SERVER/bksyncd/bksync-test"
+curl -o "$HOME/.bksyncd/bin/bksync" "http://$REMOTE_SERVER/bksyncd/bksync"
+curl -o "$HOME/.bksyncd//bin/bksyncd" "http://$REMOTE_SERVER/bksyncd/bksyncd"
 
-#configure
-cp /tmp/bksync-service/bksync-test /usr/local/bin/bksync-test
-cp /tmp/bksync-service/bksync /usr/local/bin/bksync
-cp /tmp/bksync-service/bksyncd /etc/init.d/bksyncd
-cp /tmp/bksync-service/bksync.conf /etc/bksync.conf
-rm -rf /tmp/bksync-service
-chmod +x /usr/local/bin/bksync-test
-chmod +x /usr/local/bin/bksync
-chmod +x /etc/init.d/bksyncd
+#link
+ln -s $HOME/.bksyncd/bksync.conf $HOME/bksync.conf
+if [ ! -f /etc/init.d/bksyncd ]; then
+sudo cp $HOME/.bksyncd/bin/bksyncd /etc/init.d/bksyncd
+fi
+sudo chmod 777 /etc/init.d/bksyncd
+chmod +x $HOME/.bksyncd/bin/bksync
+chmod +x $HOME/.bksyncd/bin/bksync-test
+
+echo "host: $REMOTE_SERVER" > $HOME/.bksyncd/bksync.conf
+echo "interval: 5" >> $HOME/.bksyncd/bksync.conf
+echo "path: [your-sync-path]" >> $HOME/.bksyncd/bksync.conf
+echo "email: [your-email]" >> $HOME/.bksyncd/bksync.conf
+echo "password: [your-password]" >> $HOME/.bksyncd/bksync.conf
+#...
+#echo "BKSYNCD was installed successfully"
+
+
 
 

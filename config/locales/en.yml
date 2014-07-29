@@ -21,3 +21,11 @@
 
 en:
   hello: "Hello world"
+  signup_btn: "Sign Up"
+  or: "or"
+  signin_btn: "Login"
+  install_nav: "Install"
+  signout_nav: "Signout"
+  newfolder_btn: "New Folder"
+  download_btn: "Download"
+

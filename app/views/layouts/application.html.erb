@@ -1,12 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Rails elFinder Example</title>
+  <title>BK Storage</title>
   <%= stylesheet_link_tag     'application' %>
   <%= javascript_include_tag  'application' %>
   <%= csrf_meta_tag %>
 </head>
 <body>
-  <%= yield %>
+  <div class="page-wrapper">
+    <%= render 'layouts/header' %>
+    <div class="wrapper-container">
+      <%= yield %>
+    </div>
+    <%= render 'layouts/footer' %>
+  </div>
 </body>
 </html>

@@ -10,17 +10,6 @@
  *= require jquery_ujs.js
  *= require elfinder/elfinder.min.js
  *= require elfinder/proxy/elFinderSupportVer1.js
- *= require elfinder/i18n/elfinder.ru.js
+ *= require elfinder/i18n/elfinder.vi.js
+ *= require twitter/bootstrap
  */
-$(function() {
-  var rails_csrf = {};
-  rails_csrf[$('meta[name=csrf-param]').attr('content')] = $('meta[name=csrf-token]').attr('content');
-
-  $('#elfinder').elfinder({
-    lang: 'en',
-    height: '600',
-    url: '/elfinder',
-    transport : new elFinderSupportVer1(),
-    customData: rails_csrf,
-  });
-});
